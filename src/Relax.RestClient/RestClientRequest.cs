@@ -162,17 +162,17 @@ namespace Relax.RestClient
                 return new RestClientResponse<T>(response, this, data);
             }
 
+            var error = new RestClientError(stringContent, response.ReasonPhrase);
             var errorHandler = ErrorHandlers.FirstOrDefault(x => x.CanHandle(response));
 
             if (errorHandler != null)
             {
                 var handlerResult = await errorHandler.Handle(response);
 
-                return new RestClientResponse<T>(handlerResult, response, stringContent, this);
+                return new RestClientResponse<T>(handlerResult, response, error, this);
             }
             else
             {
-                var error = new RestClientError(stringContent, response.ReasonPhrase);
                 return new RestClientResponse<T>(error, response, this);
             }
         }

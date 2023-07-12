@@ -23,17 +23,25 @@ namespace Relax.RestClient
             Error = error;
         }
 
-        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, string stringConent, RestClientRequest request)
+        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, RestClientError error, RestClientRequest request)
         {
+            if(handlerResult.Exception != null) { throw handlerResult.Exception; }
+
             StatusCode = handlerResult.StatusCode ?? response.StatusCode;
-            Data = JsonSerializer.Deserialize<T>(handlerResult.Content ?? stringConent);
+            StringContent = handlerResult.Content ?? error.Message;
+            Error = error;
+            ErrorHandled = true;
+            Data = string.IsNullOrEmpty(handlerResult.Content) ? null : JsonSerializer.Deserialize<T>(handlerResult.Content);
             Request = request; 
             ResponseMessage = response;
+            IsSuccessfull = (int)StatusCode < 400;
         }
 
         public HttpStatusCode StatusCode { get; set; }
 
         public T? Data { get; set; }
+
+        public string StringContent { get; set; }
 
         public HttpResponseMessage ResponseMessage { get; set; }
 
@@ -42,5 +50,7 @@ namespace Relax.RestClient
         public bool IsSuccessfull { get; set; }
 
         public RestClientError? Error { get; set; }
+
+        public bool ErrorHandled { get; set; }
     }
 }
