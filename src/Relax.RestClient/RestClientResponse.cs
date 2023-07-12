@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 
 namespace Relax.RestClient
 {
@@ -7,7 +8,8 @@ namespace Relax.RestClient
         public RestClientResponse(HttpResponseMessage response, RestClientRequest request, T? data) {
         
             Data = data;
-            Response = response;
+            ResponseMessage = response;
+            StatusCode = response.StatusCode;
             Request = request;
             IsSuccessfull = true;
         }
@@ -15,14 +17,25 @@ namespace Relax.RestClient
         public RestClientResponse(RestClientError error, HttpResponseMessage response, RestClientRequest request)
         {
             Request = request; 
-            Response = response;
+            ResponseMessage = response;
+            StatusCode = response.StatusCode;
             IsSuccessfull = false;
             Error = error;
         }
 
+        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, string stringConent, RestClientRequest request)
+        {
+            StatusCode = handlerResult.StatusCode ?? response.StatusCode;
+            Data = JsonSerializer.Deserialize<T>(handlerResult.Content ?? stringConent);
+            Request = request; 
+            ResponseMessage = response;
+        }
+
+        public HttpStatusCode StatusCode { get; set; }
+
         public T? Data { get; set; }
 
-        public HttpResponseMessage Response { get; set; }
+        public HttpResponseMessage ResponseMessage { get; set; }
 
         public RestClientRequest Request { get; set; }
 

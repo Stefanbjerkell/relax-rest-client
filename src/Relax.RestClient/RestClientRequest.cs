@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Relax.RestClient.ErrorHandlers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Relax.RestClient
 {
@@ -19,7 +20,7 @@ namespace Relax.RestClient
         public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
         public HttpContent? Content { get; internal set; }
 
-        public List<RestClientErrorHandler> ErrorHandlers { get; set; } = new List<RestClientErrorHandler>();
+        public List<IRestClientErrorHandler> ErrorHandlers { get; set; } = new List<IRestClientErrorHandler>();
 
         public string? StringBody { get; set; }
 
@@ -161,8 +162,19 @@ namespace Relax.RestClient
                 return new RestClientResponse<T>(response, this, data);
             }
 
-            var error = new RestClientError(stringContent, response.ReasonPhrase);
-            return new RestClientResponse<T>(error, response, this);
+            var errorHandler = ErrorHandlers.FirstOrDefault(x => x.CanHandle(response));
+
+            if (errorHandler != null)
+            {
+                var handlerResult = await errorHandler.Handle(response);
+
+                return new RestClientResponse<T>(handlerResult, response, stringContent, this);
+            }
+            else
+            {
+                var error = new RestClientError(stringContent, response.ReasonPhrase);
+                return new RestClientResponse<T>(error, response, this);
+            }
         }
 
         public async Task<T?> ExecuteWithDataResponse<T>() where T : class
@@ -175,6 +187,14 @@ namespace Relax.RestClient
 
             throw new Exception(response.Error!.Message);
 
+        }
+
+        // Error Handling
+
+        public RestClientRequest WithErrorHandler(IRestClientErrorHandler errorHandler)
+        {
+            ErrorHandlers.Add(errorHandler);
+            return this;
         }
 
         // Helpers
@@ -199,11 +219,6 @@ namespace Relax.RestClient
 
             return request;
         }
-    }
-
-    public class RestClientErrorHandler
-    {
-
     }
 
 
