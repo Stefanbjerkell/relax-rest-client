@@ -1,20 +1,17 @@
 ﻿using System.Net;
+using Relax.RestClient.ErrorHandling;
+using Relax.RestClient.ErrorHandling.Handlers;
 
 namespace Relax.RestClient.ErrorHandlers
 {
     public class StatusCodeErrorHandler : GeneralErrorHandler , IRestClientErrorHandler
     {
         private HttpStatusCode _statusCode;
-        private HandleError? _handleError;
-        private RestClientErrorHandlerResult _handlerResult;
 
         public StatusCodeErrorHandler(HttpStatusCode statusCode) 
         {
             _statusCode = statusCode;
-            _handlerResult = new RestClientErrorHandlerResult();
         }
-
-        // Interface
 
         public override bool CanHandle(HttpResponseMessage httpResponse)
         {

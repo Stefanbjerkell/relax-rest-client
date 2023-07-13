@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
+using Relax.RestClient.ErrorHandlers;
+using Relax.RestClient.ErrorHandling;
 
 namespace Relax.RestClient
 {

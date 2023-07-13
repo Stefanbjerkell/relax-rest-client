@@ -1,13 +1,13 @@
 ﻿using System.Net;
 
-namespace Relax.RestClient.ErrorHandlers
+namespace Relax.RestClient.ErrorHandling.Handlers
 {
     public class GeneralErrorHandler : IRestClientErrorHandler
     {
         private HandleError? _handleError;
         private RestClientErrorHandlerResult _handlerResult;
 
-        public GeneralErrorHandler() 
+        public GeneralErrorHandler()
         {
             _handlerResult = new RestClientErrorHandlerResult();
         }
@@ -45,7 +45,7 @@ namespace Relax.RestClient.ErrorHandlers
 
         public virtual async Task<RestClientErrorHandlerResult> Handle(HttpResponseMessage httpResponse)
         {
-            if(_handleError is not null)
+            if (_handleError is not null)
             {
                 await _handleError(httpResponse, _handlerResult);
             }
