@@ -159,8 +159,7 @@ namespace Relax.RestClient
 
             if (response.IsSuccessStatusCode)
             {
-                var data = JsonSerializer.Deserialize<T>(stringContent);
-                return new RestClientResponse<T>(response, this, data);
+                return new RestClientResponse<T>(response, this, stringContent, _jsonOptions);
             }
 
             var error = new RestClientError(stringContent, response.ReasonPhrase);
@@ -170,7 +169,7 @@ namespace Relax.RestClient
             {
                 var handlerResult = await errorHandler.Handle(response);
 
-                return new RestClientResponse<T>(handlerResult, response, error, this);
+                return new RestClientResponse<T>(handlerResult, response, error, this, _jsonOptions);
             }
             else
             {

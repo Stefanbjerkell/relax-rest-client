@@ -7,9 +7,10 @@ namespace Relax.RestClient
 {
     public class RestClientResponse<T> where T : class
     {
-        public RestClientResponse(HttpResponseMessage response, RestClientRequest request, T? data) {
+        public RestClientResponse(HttpResponseMessage response, RestClientRequest request,string stringContent, JsonSerializerOptions jsonOptions) {
         
-            Data = data;
+            Data = JsonSerializer.Deserialize<T>(stringContent, jsonOptions);
+            StringContent = stringContent;
             ResponseMessage = response;
             StatusCode = response.StatusCode;
             Request = request;
@@ -20,12 +21,13 @@ namespace Relax.RestClient
         {
             Request = request; 
             ResponseMessage = response;
+            StringContent = error.Message;
             StatusCode = response.StatusCode;
             IsSuccessfull = false;
             Error = error;
         }
 
-        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, RestClientError error, RestClientRequest request)
+        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, RestClientError error, RestClientRequest request, JsonSerializerOptions jsonOptions)
         {
             if(handlerResult.Exception != null) { throw handlerResult.Exception; }
 
@@ -33,7 +35,7 @@ namespace Relax.RestClient
             StringContent = handlerResult.Content ?? error.Message;
             Error = error;
             ErrorHandled = true;
-            Data = string.IsNullOrEmpty(handlerResult.Content) ? null : JsonSerializer.Deserialize<T>(handlerResult.Content);
+            Data = string.IsNullOrEmpty(handlerResult.Content) ? null : JsonSerializer.Deserialize<T>(handlerResult.Content, jsonOptions);
             Request = request; 
             ResponseMessage = response;
             IsSuccessfull = (int)StatusCode < 400;
