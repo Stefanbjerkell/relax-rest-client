@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Relax.RestClient.ErrorHandlers;
 using Relax.RestClient.ErrorHandling;
 
 namespace Relax.RestClient
@@ -34,7 +33,6 @@ namespace Relax.RestClient
             StatusCode = handlerResult.StatusCode ?? response.StatusCode;
             StringContent = handlerResult.Content ?? error.Message;
             Error = error;
-            ErrorHandled = true;
             Data = string.IsNullOrEmpty(handlerResult.Content) ? null : JsonSerializer.Deserialize<T>(handlerResult.Content, jsonOptions);
             Request = request; 
             ResponseMessage = response;
@@ -54,7 +52,5 @@ namespace Relax.RestClient
         public bool IsSuccessfull { get; set; }
 
         public RestClientError? Error { get; set; }
-
-        public bool ErrorHandled { get; set; }
     }
 }
