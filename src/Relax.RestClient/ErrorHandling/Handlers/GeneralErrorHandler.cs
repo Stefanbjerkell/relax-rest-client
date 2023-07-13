@@ -5,28 +5,28 @@ namespace Relax.RestClient.ErrorHandling.Handlers
     public class GeneralErrorHandler : IRestClientErrorHandler
     {
         private HandleError? _handleError;
-        private RestClientErrorHandlerResult _handlerResult;
+        private GeneralErrorHandlerActions _actions;
 
         public GeneralErrorHandler()
         {
-            _handlerResult = new RestClientErrorHandlerResult();
+            _actions = new GeneralErrorHandlerActions();
         }
 
         public GeneralErrorHandler Throws(Exception exception)
         {
-            _handlerResult.Exception = exception;
+            _actions.Exception = exception;
             return this;
         }
 
         public GeneralErrorHandler SetBody(string body)
         {
-            _handlerResult.Content = body;
+            _actions.Content = body;
             return this;
         }
 
         public GeneralErrorHandler SetStatusCode(HttpStatusCode newStatus)
         {
-            _handlerResult.StatusCode = newStatus;
+            _actions.StatusCode = newStatus;
             return this;
         }
 
@@ -43,15 +43,32 @@ namespace Relax.RestClient.ErrorHandling.Handlers
             return true;
         }
 
-        public virtual async Task<RestClientErrorHandlerResult> Handle(HttpResponseMessage httpResponse)
+        public virtual async Task Handle(HttpResponseMessage httpResponse, RestClientResponse response)
         {
-            if (_handleError is not null)
+            if(_actions.Exception is not null)
             {
-                await _handleError(httpResponse, _handlerResult);
+                throw _actions.Exception;
             }
 
-            return await Task.FromResult(_handlerResult);
+            if (_handleError is not null)
+            {
+                await _handleError(httpResponse, response);
+            }
+
+
         }
+    }
+
+    public class GeneralErrorHandlerActions
+    {
+        // Replace the content of the RestClientResult.
+        public string? Content { get; set; }
+
+        // Replace the status code of the RestClientResult
+        public HttpStatusCode? StatusCode { get; set; }
+
+        // Throws a custome exception.
+        public Exception? Exception { get; set; }
     }
 
     public class GeneralErrorHandlerBuilder
@@ -83,12 +100,13 @@ namespace Relax.RestClient.ErrorHandling.Handlers
         public RestClientRequest Do(HandleError handleError)
         {
             _handler.Do(handleError);
+            _request.ErrorHandlers.Add(_handler);
             return _request;
         }
 
     }
 
-    public delegate Task HandleError(HttpResponseMessage response, RestClientErrorHandlerResult result);
+    public delegate Task HandleError(HttpResponseMessage response, RestClientResponse result);
 
     public static class GeneralErrorHandlerExtensions
     {

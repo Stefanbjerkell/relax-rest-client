@@ -4,7 +4,7 @@
     {
         bool CanHandle(HttpResponseMessage httpResponse);
 
-        Task<RestClientErrorHandlerResult> Handle(HttpResponseMessage httpResponse);
+        Task Handle(HttpResponseMessage httpResponse, RestClientResponse response);
     }
 
 

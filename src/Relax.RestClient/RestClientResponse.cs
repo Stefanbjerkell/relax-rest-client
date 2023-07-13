@@ -4,44 +4,32 @@ using Relax.RestClient.ErrorHandling;
 
 namespace Relax.RestClient
 {
-    public class RestClientResponse<T> where T : class
+    public class RestClientResponse
     {
-        public RestClientResponse(HttpResponseMessage response, RestClientRequest request,string stringContent, JsonSerializerOptions jsonOptions) {
-        
-            Data = JsonSerializer.Deserialize<T>(stringContent, jsonOptions);
+        private JsonSerializerOptions _jsonOptions;
+
+        public RestClientResponse(HttpResponseMessage response, RestClientRequest request,string stringContent, JsonSerializerOptions jsonOptions)
+        { 
             StringContent = stringContent;
             ResponseMessage = response;
             StatusCode = response.StatusCode;
             Request = request;
-            IsSuccessfull = true;
+
+            _jsonOptions = jsonOptions ?? new JsonSerializerOptions();
         }
 
-        public RestClientResponse(RestClientError error, HttpResponseMessage response, RestClientRequest request)
+        public RestClientResponse(RestClientError error, HttpResponseMessage response, RestClientRequest request, JsonSerializerOptions jsonOptions)
         {
             Request = request; 
             ResponseMessage = response;
             StringContent = error.Message;
             StatusCode = response.StatusCode;
-            IsSuccessfull = false;
             Error = error;
-        }
 
-        public RestClientResponse(RestClientErrorHandlerResult handlerResult, HttpResponseMessage response, RestClientError error, RestClientRequest request, JsonSerializerOptions jsonOptions)
-        {
-            if(handlerResult.Exception != null) { throw handlerResult.Exception; }
-
-            StatusCode = handlerResult.StatusCode ?? response.StatusCode;
-            StringContent = handlerResult.Content ?? error.Message;
-            Error = error;
-            Data = string.IsNullOrEmpty(handlerResult.Content) ? null : JsonSerializer.Deserialize<T>(handlerResult.Content, jsonOptions);
-            Request = request; 
-            ResponseMessage = response;
-            IsSuccessfull = (int)StatusCode < 400;
+            _jsonOptions = jsonOptions ?? new JsonSerializerOptions();
         }
 
         public HttpStatusCode StatusCode { get; set; }
-
-        public T? Data { get; set; }
 
         public string StringContent { get; set; }
 
@@ -49,8 +37,13 @@ namespace Relax.RestClient
 
         public RestClientRequest Request { get; set; }
 
-        public bool IsSuccessfull { get; set; }
+        public bool IsSuccessfull { get => (int)StatusCode < 400; }
 
         public RestClientError? Error { get; set; }
+
+        public T? Content<T>() where T : class
+        {
+            return JsonSerializer.Deserialize<T>(StringContent, _jsonOptions);
+        }
     }
 }

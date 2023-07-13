@@ -152,37 +152,35 @@ namespace Relax.RestClient
             return response;
         }
 
-        public async Task<RestClientResponse<T>> Execute<T>() where T : class
+        public async Task<RestClientResponse> Execute()
         {
             var response = await ExecuteWithHttpResponse();
             var stringContent = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return new RestClientResponse<T>(response, this, stringContent, _jsonOptions);
+                return new RestClientResponse(response, this, stringContent, _jsonOptions);
             }
 
             var error = new RestClientError(response.StatusCode, stringContent, response.ReasonPhrase);
-            var errorHandler = ErrorHandlers.FirstOrDefault(x => x.CanHandle(response));
+            var result = new RestClientResponse(error, response, this, _jsonOptions);
 
+            var errorHandler = ErrorHandlers.FirstOrDefault(x => x.CanHandle(response));
             if (errorHandler != null)
             {
-                var handlerResult = await errorHandler.Handle(response);
-                error.Handled = true;
-                return new RestClientResponse<T>(handlerResult, response, error, this, _jsonOptions);
+                await errorHandler.Handle(response, result);
+                result.Error!.Handled = true;
             }
-            else
-            {
-                return new RestClientResponse<T>(error, response, this);
-            }
+
+            return result;
         }
 
         public async Task<T?> ExecuteWithDataResponse<T>() where T : class
         {
-            var response = await Execute<T>();
+            var response = await Execute();
             if (response.IsSuccessfull)
             {
-                return response.Data;
+                return response.Content<T>();
             }
 
             throw new Exception(response.Error!.Message);
