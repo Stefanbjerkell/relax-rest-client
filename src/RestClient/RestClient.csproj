@@ -15,6 +15,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <AssemblyName>StefanBjerkell.RestClient</AssemblyName>
     <Authors>Stefanbjerkell</Authors>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,7 +4,30 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>StefanBjerkell.RestClient.Mock</PackageId>
+    <Title>Stefan Bjerkell - RestClient.Mock</Title>
+    <Version>1.1.0</Version>
+    <Authors>StefanBjerkell</Authors>
+    <Description>This package provides a simple way to mock a http client. Works well together with my RestClient when writing unit tests.</Description>
+    <PackageProjectUrl>https://github.com/Stefanbjerkell/rest-client</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Stefanbjerkell/rest-client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>mock;rest;http</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RestClient\RestClient.csproj" />
