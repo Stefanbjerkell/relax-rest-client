@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Runtime;
 using System.Text.Json;
 
-namespace Relax.RestClient
+namespace RestClient
 {
     public class RestClient
     {

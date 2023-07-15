@@ -1,8 +1,8 @@
-using Relax.RestClient.Moq;
+using RestClient.Moq;
 using System.Net;
-using Relax.RestClient.ErrorHandlers;
+using RestClient.ErrorHandlers;
 
-namespace Relax.RestClient.Test
+namespace RestClient.Test
 {
     public class RestClientTests
     {

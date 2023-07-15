@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net;
 using System.Text.Json;
 
-namespace Relax.RestClient.Moq
+namespace RestClient.Moq
 {
     public static class MockHttpClient
     {

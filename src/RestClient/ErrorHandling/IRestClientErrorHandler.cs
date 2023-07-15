@@ -1,4 +1,4 @@
-﻿namespace Relax.RestClient.ErrorHandling
+﻿namespace RestClient.ErrorHandling
 {
     public interface IRestClientErrorHandler
     {

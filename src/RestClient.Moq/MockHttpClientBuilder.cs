@@ -5,7 +5,7 @@ using System.Net;
 using System.Text.Json;
 using System.Linq.Expressions;
 
-namespace Relax.RestClient.Moq
+namespace RestClient.Moq
 {
     public class MockHttpClientBuilder
     {

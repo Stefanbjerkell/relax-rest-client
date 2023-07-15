@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Relax.RestClient
+namespace RestClient
 {
     public class RestClientError
     {

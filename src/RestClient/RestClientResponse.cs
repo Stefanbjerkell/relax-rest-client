@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Relax.RestClient.ErrorHandling;
+using RestClient.ErrorHandling;
 
-namespace Relax.RestClient
+namespace RestClient
 {
     public class RestClientResponse
     {

@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using Relax.RestClient.ErrorHandling;
-using Relax.RestClient.ErrorHandling.Handlers;
+using RestClient.ErrorHandling;
+using RestClient.ErrorHandling.Handlers;
 
-namespace Relax.RestClient.ErrorHandlers;
+namespace RestClient.ErrorHandlers;
 
 public class StatusCodeErrorHandler : GeneralErrorHandler , IRestClientErrorHandler
 {

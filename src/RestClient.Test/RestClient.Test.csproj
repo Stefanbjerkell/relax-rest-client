@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Relax.RestClient.Moq\Relax.RestClient.Moq.csproj" />
-    <ProjectReference Include="..\src\Relax.RestClient\Relax.RestClient.csproj" />
+    <ProjectReference Include="..\RestClient.Moq\RestClient.Moq.csproj" />
+    <ProjectReference Include="..\RestClient\RestClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Relax.RestClient.ErrorHandling.Handlers
+namespace RestClient.ErrorHandling.Handlers
 {
     public class GeneralErrorHandler : IRestClientErrorHandler
     {
