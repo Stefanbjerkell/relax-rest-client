@@ -1,66 +1,62 @@
-using RestClient.Moq;
-using System.Net;
-using RestClient.ErrorHandlers;
+namespace RestClient.Test;
 
-namespace RestClient.Test
+public class RestClientTests
 {
-    public class RestClientTests
+    [SetUp]
+    public void Setup()
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
 
-        [Test]
-        public async Task Success()
-        {
-            var body = "success!";
-            var path = "good-path";
+    }
 
-            var httpClient = MockHttpClient.Setup()
-                .Get(path, System.Net.HttpStatusCode.OK, body)
-                .Build();
+    [Test]
+    public async Task Success()
+    {
+        var body = "success!";
+        var path = "good-path";
 
-            var restClient = new RestClient(httpClient);
+        var httpClient = HttpMock.SetupClient()
+            .Get(path, HttpStatusCode.OK, body)
+            .Build();
 
-            var result = await restClient.Get(path).Execute();
+        var restClient = new RestClient(httpClient);
 
-            var data = result.Content<string>();
+        var result = await restClient.Get(path).Execute();
 
-            Assert.That(result.IsSuccessfull, Is.True);
-            Assert.That(data, Is.EqualTo(body));
-        }
+        var data = result.Content<string>();
 
-        [Test]
-        public async Task ErrorHandled()
-        {
-            var body = new TestError();
-            var path = "bad-path";
+        Assert.That(result.IsSuccessfull, Is.True);
+        Assert.That(data, Is.EqualTo(body));
+    }
 
-            var httpClient = MockHttpClient.Setup()
-                .Get(path, HttpStatusCode.BadRequest, body)
-                .Build();
+    [Test]
+    public async Task ErrorHandled()
+    {
+        var body = new TestError();
+        var path = "bad-path";
 
-            var restClient = new RestClient(httpClient);
+        var httpClient = HttpMock.SetupClient()
+            .Get(path, HttpStatusCode.BadRequest, body)
+            .Build();
 
-            var result = await restClient.Get(path)
-                .OnError(HttpStatusCode.BadRequest).Do(async (response, result) => 
-                { 
-                    result.StatusCode = HttpStatusCode.OK; 
-                })
-                .Execute();
+        var restClient = new RestClient(httpClient);
 
-            Assert.That(result.IsSuccessfull, Is.True);
-            Assert.That(result.Error,Is.Not.Null);
-            Assert.That(result.Error.StatusCode , Is.EqualTo(HttpStatusCode.BadRequest));
-            Assert.That(result.Error.Handled, Is.EqualTo(true));
-            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-        }
+        var result = await restClient.Get(path)
+            .OnError(HttpStatusCode.BadRequest).Do(async (response, result) => 
+            { 
+                result.StatusCode = HttpStatusCode.OK; 
+            })
+            .Execute();
+
+        Assert.That(result.IsSuccessfull, Is.True);
+        Assert.That(result.Error,Is.Not.Null);
+        Assert.That(result.Error.StatusCode , Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That(result.Error.Handled, Is.EqualTo(true));
+        Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
 
 
-        public class TestError
-        {
-            public string ErrorMessage { get; set; } = "Something went wrong!";
-        }
+    public class TestError
+    {
+        public string ErrorMessage { get; set; } = "Something went wrong!";
     }
 }

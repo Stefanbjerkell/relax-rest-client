@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestClient", "src\RestClient\RestClient.csproj", "{F0BBA4C1-D21E-4BB5-AD2E-5B59CF90137D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestClient.Moq", "src\RestClient.Moq\RestClient.Moq.csproj", "{7BFF7967-4CD5-4961-8EC3-42E467365F9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestClient.Mock", "src\RestClient.Moq\RestClient.Mock.csproj", "{7BFF7967-4CD5-4961-8EC3-42E467365F9A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestClient.Test", "src\RestClient.Test\RestClient.Test.csproj", "{8881C818-341A-419B-AA14-3B850A5550BA}"
 EndProject

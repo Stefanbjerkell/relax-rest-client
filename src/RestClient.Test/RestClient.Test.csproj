@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RestClient.Moq\RestClient.Moq.csproj" />
+    <ProjectReference Include="..\RestClient.Moq\RestClient.Mock.csproj" />
     <ProjectReference Include="..\RestClient\RestClient.csproj" />
   </ItemGroup>
 
