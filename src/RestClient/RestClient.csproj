@@ -4,6 +4,28 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Stefan Bjerkell - RestClient</Title>
+    <Description>A simple RestClient witha fluid interface for attaching headers and parameters to your requests. Handles parsing of data and other time saving tasks.</Description>
+    <PackageProjectUrl>https://github.com/Stefanbjerkell/rest-client</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Stefanbjerkell/rest-client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>rest:http</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AssemblyName>StefanBjerkell.RestClient</AssemblyName>
+    <Authors>Stefanbjerkell</Authors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
