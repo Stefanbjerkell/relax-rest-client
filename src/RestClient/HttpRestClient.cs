@@ -89,7 +89,7 @@ namespace RestClient
     {
         public string BaseUrl { get; set; } = "";
 
-        public int TimeoutInSeconds { get; set;}
+        public int TimeoutInSeconds { get; set; } = 10;
 
         public string? UserAgent { get; set;}
     }

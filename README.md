@@ -64,6 +64,10 @@ var request = client.Get("path")
 var response = await request.Execute();
 ```
 
+> 💡 You can also add default headers directly to the client. with AddDefaultHeader(name,value) method. Or add them directly to the dictionary at HttpRestClient.DefaultHeaders
+
+> 💡 Coming soon. Helpers for setting Auth headers.
+
 #### Request/Response body
 ```
 var client = new HttpRestClient("https://myapi.com);
