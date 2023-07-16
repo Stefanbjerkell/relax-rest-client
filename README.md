@@ -13,16 +13,49 @@ Features.
 #### Simple version
 
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com");
 
 var request = client.Get("path");
 
 var response = await request.Execute();
 ```
 
+Or just 
+```
+var client = new HttpRestClient("https://myapi.com");
+
+var response = client.Get("path").Execute();
+```
+
+#### Other versions
+
+You can also set up the clientby providing a settings object with some additional settings for your client
+```
+var settings = new RestClientSettings()
+{
+	BaseUrl = "http://myapi.com",
+	TimeOutInSeconds = 10,
+	UserAgent = "Agent1"
+}
+var client = new HttpRestClient(settings);
+```
+
+The above constructors will create a HttpClient that will be used to do the actual requests. If you want to you can inject your own HttpClient or HttpMessageHandler that will be used instead.
+This can be good when doing unit tests and you want to mock the HttpRequest.
+```
+var myHttpClient = new HttpClient();
+var client = new HttpRestClient(myHttpClient);
+```
+Or..
+
+```
+var myHttpMessagehandler = new HttpMessageHandler();
+var client = new HttpRestClient(myHttpMessagehandler);
+```
+
 #### Headers
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 
 var request = client.Get("path")
 	.WithHeader("My-Header-1", "header-value")
@@ -33,7 +66,7 @@ var response = await request.Execute();
 
 #### Request/Response body
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 var body = new MyBodyObject();
 
 var request = client.Post("path")
@@ -50,7 +83,7 @@ var request = client.Post("path", body)
 ```
 #### Query and route parameters
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 var accountId = "my-account-id";
 
 var request = client.Get("account/{accountId}")
@@ -69,7 +102,7 @@ Examples of how to attach the default error handlers.
 #### Catch all errors.
 
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 var accountId = "my-account-id";
 
 var request = client.Get("accounts/{accountId}")
@@ -82,7 +115,7 @@ var response = await request.Execute();
 #### Catch specific HttpStatus.
 
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 var accountId = "my-account-id";
 
 var request = client.Get("accounts/{accountId}")
@@ -95,7 +128,7 @@ var response = await request.Execute();
 #### Add customer error handler.
 
 ```
-var client = new RestClient("https://myapi.com);
+var client = new HttpRestClient("https://myapi.com);
 var accountId = "my-account-id";
 
 var handler = new CustomErrorHandler();
@@ -161,4 +194,14 @@ var myResponse = new HttpResponseMessage();
 var httpClient = HttpMock.SetupClient()
 	.WithDefaultResponse(myResponse)
 	.Build();
+```
+
+The mocked HttpClient can then easily be injected in to the HttpRestClient like this.
+```
+var mockedHttpClient = HttpMock.SetupClient()
+	.WithDefaultResponse(myResponse)
+	.Build();
+
+var restClient = new HttpRestClient(mockedHttpClient);
+
 ```
