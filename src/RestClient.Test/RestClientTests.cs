@@ -1,3 +1,5 @@
+using NUnit.Framework;
+
 namespace RestClient.Test;
 
 public class RestClientTests
@@ -41,19 +43,20 @@ public class RestClientTests
         var restClient = new RestClient(httpClient);
 
         var result = await restClient.Get(path)
-            .OnError(HttpStatusCode.BadRequest).Do(async (response, result) => 
-            { 
-                result.StatusCode = HttpStatusCode.OK; 
+            .OnError(HttpStatusCode.BadRequest).Do(async (response, result) =>
+            {
+                result.StatusCode = HttpStatusCode.OK;
             })
             .Execute();
 
         Assert.That(result.IsSuccessfull, Is.True);
-        Assert.That(result.Error,Is.Not.Null);
-        Assert.That(result.Error.StatusCode , Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That(result.Error, Is.Not.Null);
+        Assert.That(result.Error.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(result.Error.Handled, Is.EqualTo(true));
         Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-    }
+        Assert.That(result.StringContent.Contains(body.ErrorMessage), Is.True);
 
+    }
 
     public class TestError
     {

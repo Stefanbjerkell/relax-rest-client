@@ -123,6 +123,8 @@ namespace RestClient
 
         public RestClientRequest WithJsonBody(object body)
         {
+            if (body is null) return this;
+
             StringBody = JsonSerializer.Serialize(body, _jsonOptions);
             var mediaType = "application/json";
             var content = new StringContent(StringBody, null, mediaType);
@@ -189,7 +191,7 @@ namespace RestClient
 
         // Error Handling
 
-        public RestClientRequest WithErrorHandler(IRestClientErrorHandler errorHandler)
+        public RestClientRequest AddErrorHandler(IRestClientErrorHandler errorHandler)
         {
             ErrorHandlers.Add(errorHandler);
             return this;

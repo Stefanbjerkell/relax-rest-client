@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http.Json;
 using System.Runtime;
@@ -11,6 +12,15 @@ namespace RestClient
         private HttpClient _client;
 
         public JsonSerializerOptions JsonOptions { get; set; }
+
+        public RestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
+        {
+            JsonOptions = jsonOptions ?? new JsonSerializerOptions();
+
+            _client = new HttpClient();
+
+            _client.BaseAddress = new Uri(baseUrl);
+        }
 
         public RestClient(RestClientSettings settings, JsonSerializerOptions? jsonOptions = null)
         {
@@ -47,14 +57,16 @@ namespace RestClient
             return new RestClientRequest(HttpMethod.Get, path, _client, JsonOptions);
         }
 
-        public RestClientRequest Put(string path)
+        public RestClientRequest Put(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Put, path, _client, JsonOptions);
+            return new RestClientRequest(HttpMethod.Put, path, _client, JsonOptions)
+                .WithJsonBody(body);
         }
 
-        public RestClientRequest Post(string path)
+        public RestClientRequest Post(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Post, path, _client, JsonOptions);
+            return new RestClientRequest(HttpMethod.Post, path, _client, JsonOptions)
+                .WithJsonBody(body);
         }
 
         public RestClientRequest Delete(string path)
