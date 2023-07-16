@@ -1,4 +1,4 @@
-# RestClient
+﻿# RestClient
 
 This rest client was created to add some extra features to the standard System.Net.Http.HttpClient.
 
@@ -87,11 +87,12 @@ var client = new HttpRestClient("https://myapi.com);
 var accountId = "my-account-id";
 
 var request = client.Get("account/{accountId}")
-	.WithParameter(accountId)
+	.WithParameter(accountId) // This is equal to ("accountId", accountId)
 	.WithQueryParameter("query", "value");
 
 var response = await request.Execute();
 ```
+>💡 WithParameter will replace the {account} placeholder from the path. As you see in the example the name of the parameter will be used as the "key" if no key is provided.
 
 ## Error Handling
 
