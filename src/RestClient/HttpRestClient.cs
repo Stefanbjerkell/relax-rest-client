@@ -1,19 +1,14 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Net.Http.Json;
-using System.Runtime;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace RestClient
 {
-    public class RestClient
+    public class HttpRestClient
     {
         private HttpClient _client;
 
         public JsonSerializerOptions JsonOptions { get; set; }
 
-        public RestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
         {
             JsonOptions = jsonOptions ?? new JsonSerializerOptions();
 
@@ -22,7 +17,7 @@ namespace RestClient
             _client.BaseAddress = new Uri(baseUrl);
         }
 
-        public RestClient(RestClientSettings settings, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(RestClientSettings settings, JsonSerializerOptions? jsonOptions = null)
         {
             JsonOptions = jsonOptions ?? new JsonSerializerOptions();
 
@@ -38,13 +33,13 @@ namespace RestClient
 
         }        
 
-        public RestClient(HttpMessageHandler messageHandler, JsonSerializerOptions? jsonOptions = null) 
+        public HttpRestClient(HttpMessageHandler messageHandler, JsonSerializerOptions? jsonOptions = null) 
             : this(new HttpClient(messageHandler), jsonOptions)
         {
 
         }
 
-        public RestClient(HttpClient client, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(HttpClient client, JsonSerializerOptions? jsonOptions = null)
         {
             JsonOptions = jsonOptions ?? new JsonSerializerOptions();
             _client = client;
@@ -74,7 +69,7 @@ namespace RestClient
             return new RestClientRequest(HttpMethod.Delete, path, _client, JsonOptions);
         }
 
-        public RestClient WithJsonOptions(JsonSerializerOptions jsonOptions)
+        public HttpRestClient WithJsonOptions(JsonSerializerOptions jsonOptions)
         {
             JsonOptions = jsonOptions;
             return this;

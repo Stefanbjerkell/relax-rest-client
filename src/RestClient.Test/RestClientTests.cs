@@ -20,7 +20,7 @@ public class RestClientTests
             .Get(path, HttpStatusCode.OK, body)
             .Build();
 
-        var restClient = new RestClient(httpClient);
+        var restClient = new HttpRestClient(httpClient);
 
         var result = await restClient.Get(path).Execute();
 
@@ -40,7 +40,7 @@ public class RestClientTests
             .Get(path, HttpStatusCode.BadRequest, body)
             .Build();
 
-        var restClient = new RestClient(httpClient);
+        var restClient = new HttpRestClient(httpClient);
 
         var result = await restClient.Get(path)
             .OnError(HttpStatusCode.BadRequest).Do(async (response, result) =>
