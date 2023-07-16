@@ -40,7 +40,7 @@ var settings = new RestClientSettings()
 var client = new HttpRestClient(settings);
 ```
 
-The above constructors will create a HttpClient that will be used to do the actual requests. If you want to you can inject your own HttpClient or HttpMessageHandler that will be used instead.
+The above constructors will create a HttpClient internaly that will be used to do the actual requests. If you want to you can inject your own HttpClient or HttpMessageHandler that will be used instead.
 This can be good when doing unit tests and you want to mock the HttpRequest.
 ```
 var myHttpClient = new HttpClient();
@@ -125,6 +125,19 @@ var request = client.Get("accounts/{accountId}")
 
 var response = await request.Execute();
 ```
+
+As you see you can add the default handlers in a fluid way by firs specifying the condition for the error handler to trigger on. Then you can specify the action to take,
+The default error handler have the 3 following actions available.
+
+- Throw(Exception ex) // Throw you own exception.
+- SetBody(HttpStatusCode status, string content) // Override the response status and body.
+- Do(HandleError handleError) // Do whatever you want.
+
+The Do action takes a delegate method that looks like this.
+```
+delegate Task HandleError(HttpResponseMessage response, RestClientResponse result)
+```
+This has the incoming httpResponse and also the RestClientResponse as input parameters. Here you can do what you want. For example modify the response or do some logging.
 
 #### Add customer error handler.
 
