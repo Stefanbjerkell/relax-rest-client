@@ -8,6 +8,15 @@ namespace RestClient
 
         public JsonSerializerOptions JsonOptions { get; set; }
 
+        public Dictionary<string, string> DefaultHeaders { get; set; } = new Dictionary<string, string>();  
+
+        public void AddDefaultHeader(string key, string value)
+        {
+            if (DefaultHeaders.ContainsKey(key)) throw new Exception("Header with same name already added!");
+
+            DefaultHeaders.Add(key, value);
+        }
+
         public HttpRestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
         {
             JsonOptions = jsonOptions ?? new JsonSerializerOptions();
@@ -49,24 +58,24 @@ namespace RestClient
 
         public RestClientRequest Get(string path)
         {
-            return new RestClientRequest(HttpMethod.Get, path, _client, JsonOptions);
+            return new RestClientRequest(HttpMethod.Get, path, _client, JsonOptions, DefaultHeaders);
         }
 
         public RestClientRequest Put(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Put, path, _client, JsonOptions)
+            return new RestClientRequest(HttpMethod.Put, path, _client, JsonOptions, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Post(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Post, path, _client, JsonOptions)
+            return new RestClientRequest(HttpMethod.Post, path, _client, JsonOptions, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Delete(string path)
         {
-            return new RestClientRequest(HttpMethod.Delete, path, _client, JsonOptions);
+            return new RestClientRequest(HttpMethod.Delete, path, _client, JsonOptions, DefaultHeaders);
         }
 
         public HttpRestClient WithJsonOptions(JsonSerializerOptions jsonOptions)

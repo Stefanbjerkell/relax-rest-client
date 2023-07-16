@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using RestClient.ErrorHandlers;
@@ -25,8 +26,9 @@ namespace RestClient
 
         public string? StringBody { get; set; }
 
-        public RestClientRequest(HttpMethod method, string path, HttpClient client, JsonSerializerOptions jsonOptions)
+        public RestClientRequest(HttpMethod method, string path, HttpClient client, JsonSerializerOptions jsonOptions, Dictionary<string,string> headers)
         {
+            Headers = headers;
             _method = method;
             _path = path;
             _client = client;
