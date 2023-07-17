@@ -29,7 +29,7 @@ var response = client.Get("path").Execute();
 
 #### Other versions
 
-You can also set up the clientby providing a settings object with some additional settings for your client
+You can also set up the client by providing a settings object with some additional settings for your client
 ```
 var settings = new RestClientSettings()
 {
@@ -74,7 +74,7 @@ client.AddAuthToken(token, "Bearer");
 // OR
 client.AddBasicAuth(username, password);
 ```
-> 💡 on AddAuthToken "Bearer" is default value so you cont have to include that.
+> 💡 on AddAuthToken "Bearer" is default value so you don't have to include that.
 
 
 #### Request/Response body
@@ -90,7 +90,9 @@ var response = await request.Execute();
 var data = response.Content<ResponseContenetType>();
 ```
 
-Or you can pass the body directly in the Post/Put method.
+As you can see you get the parsed response by calling response.Content<Type\>()
+
+You can also pass the body directly in the Post/Put method.
 ```
 var request = client.Post("path", body)
 ```
@@ -232,3 +234,56 @@ var mockedHttpClient = HttpMock.SetupClient()
 var restClient = new HttpRestClient(mockedHttpClient);
 
 ```
+
+## Advanced setup.
+
+### Inherit from HttpRestClient
+
+The way i normally use this client is to create my Repository or Api class that inherits from HttpRestClient.
+
+
+```
+public class WeatherApi : HttpRestClient
+{
+	public WeatherApi(IOption<WeatherApiSettings> settings) : base(settings.value)
+	{
+	}
+
+	public async Task<Weather> GetWeather(string city, int days)
+	{
+		var request = Get("weather/{city})
+			.WithParameter(city)
+			.WithQueryParameter(days)
+			.OnError(HttpStatusCode.NotFound)
+				.SetResponse(200, "{}")
+			.OnError(HttpStatusCode.BadRequest)
+				.Throw(new Exception("Something went wrong calling weather service");
+
+		return await request.ExecuteAsData<Weather>();
+	}
+
+}
+
+public class WeatherApiSettings : RestClientSettings
+{
+	public const string Position = "WeatherApi";
+}
+```
+
+In this example we have a WeatherApi class that inherits from HttpRestClient. 
+
+It has 2 error handlers registered for diffrent status codes and we choose the ExecuteAsData to directly return the deserialized content.
+
+We also have to setup dependency injection for the WeatherApiSettings and have it map to a section in appsettings with all our configuration.
+
+```
+builder.Services.AddOptions<WeatherApiSettings>()
+    .Bind(builder.Configuration.GetSection(WeatherApiSettings.Position))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+```
+
+In this example we are using the AddOptions method to add the IOption\<WeatherService> interface to DI. 
+I like this way because it can also run validations for your data annotaions in your settings object.
+
+

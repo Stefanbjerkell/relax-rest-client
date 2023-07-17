@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>StefanBjerkell.$(AssemblyName)</PackageId>
+    <Title>A Newtonsoft serializer for the RestClient.</Title>
+    <Version>3.0.0</Version>
+    <Authors>Stefanbjerkell</Authors>
+    <Description>A optional serializer that can be used insteaf of the default .NET seializer.</Description>
+    <PackageProjectUrl>https://github.com/Stefanbjerkell/rest-client</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Stefanbjerkell/rest-client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>rest:http:serialization</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\RestClient\RestClient.csproj" />
+  </ItemGroup>
+
+</Project>
