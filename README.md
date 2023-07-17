@@ -152,7 +152,7 @@ delegate Task HandleError(HttpResponseMessage response, RestClientResponse resul
 ```
 This has the incoming httpResponse and also the RestClientResponse as input parameters. Here you can do what you want. For example modify the response or do some logging.
 
-#### Add customer error handler.
+#### Add custom error handler.
 
 ```
 var client = new HttpRestClient("https://myapi.com);
@@ -166,12 +166,12 @@ var request = client.Get("accounts/{accountId}")
 var response = await request.Execute();
 ```
 
-Custom error handler must inplement the interface IErrorHandler. It has two methods.c
+Custom error handler must inplement the interface IErrorHandler. It has two methods.
 
 - bool CanHandle(HttpResponseMessage httpResponse)
 - Task Handle(HttpResponseMessage httpResponse, RestClientResponse response)
 
-CanHandle lets the rest client know if the handler can handle the error. If multiple errorHandlers can handle the error the first one added will take priority. So the order in wich you add them will matter if you have more then one.
+CanHandle lets the rest client know if the handler can handle the error. If multiple errorHandlers can handle the error the first one added will take priority. So the order in wich you add them will matter (if you have more then one).
 
 To handle a error you provide a method that takes the original httpResponse and the expected RestClientResposne as parameters. If you want to you can here modify the RestClientResponse or just do some logging/throwing a exception, its up to you.
 
@@ -185,9 +185,9 @@ Examples.
 var body = MyResponseBody();
 
 var httpClient = HttpMock.SetupClient()
-            .Get("good-path", HttpStatusCode.OK, body)
-			.Post("bad-path", HttpStatusCode.BadRequest)
-            .Build();
+	.Get("good-path", HttpStatusCode.OK, body)
+	.Post("bad-path", HttpStatusCode.BadRequest)
+	.Build();
 ```
 
 This will set up a httpClient with two mocked path.One that will return OK and another that will return a error.
@@ -197,10 +197,9 @@ If you leave out the path parameter it will default to "*" (catching all paths).
 You can also choose to set a default response to any request to the client.
 
 ```
-var delayInMilliseconds = 20000;
 
 var httpClient = HttpMock.SetupClient()
-	.WithDefaultResponse(HttpStatusCode.OK, body,delayInMilliseconds)
+	.WithDefaultResponse(HttpStatusCode.OK)
 	.Build();
 ```
 
@@ -208,6 +207,7 @@ You can provide a delay to any of the mocked responses if you want to.
 
 ```
 var delayInMilliseconds = 20000;
+var body = MyResponseBody();
 
 var httpClient = HttpMock.SetupClient()
 	.WithDefaultResponse(HttpStatusCode.OK, body, delayInMilliseconds)
