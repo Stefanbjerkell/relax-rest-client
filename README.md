@@ -66,7 +66,19 @@ var response = await request.Execute();
 
 > 💡 You can also add default headers directly to the client. with AddDefaultHeader(name,value) method. Or add them directly to the dictionary at HttpRestClient.DefaultHeaders
 
-> 💡 Coming soon. Helpers for setting Auth headers.
+##### Auth headers
+
+If you want to add authorization to your client you can use the following 2 methods on the client.
+```
+
+client.AddAuthToken(token, "Bearer");
+
+// OR
+
+client.AddBasicAuth(username, password);
+
+```
+
 
 #### Request/Response body
 ```

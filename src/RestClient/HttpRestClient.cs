@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace RestClient
 {
@@ -10,12 +11,6 @@ namespace RestClient
 
         public Dictionary<string, string> DefaultHeaders { get; set; } = new Dictionary<string, string>();  
 
-        public void AddDefaultHeader(string key, string value)
-        {
-            if (DefaultHeaders.ContainsKey(key)) throw new Exception("Header with same name already added!");
-
-            DefaultHeaders.Add(key, value);
-        }
 
         public HttpRestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
         {
@@ -78,9 +73,34 @@ namespace RestClient
             return new RestClientRequest(HttpMethod.Delete, path, _client, JsonOptions, DefaultHeaders);
         }
 
-        public HttpRestClient WithJsonOptions(JsonSerializerOptions jsonOptions)
+        // Options
+
+        public void AddDefaultHeader(string key, string value)
+        {
+            if (DefaultHeaders.ContainsKey(key)) throw new Exception("Header with same name already added!");
+
+            DefaultHeaders.Add(key, value);
+        }
+
+        public HttpRestClient AddJsonOptions(JsonSerializerOptions jsonOptions)
         {
             JsonOptions = jsonOptions;
+            return this;
+        }
+
+        public HttpRestClient AddBasicAuth(string username, string password)
+        {
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(username + ":" + password));
+
+            AddDefaultHeader("Authorization", $"Basic {credentials}");
+
+            return this;
+        }
+
+        public HttpRestClient AddAuthToken(string token, string schema = "Bearer")
+        {
+            AddDefaultHeader("Authorization", $"{schema} {token}");
+
             return this;
         }
     }
