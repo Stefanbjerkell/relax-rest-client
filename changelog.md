@@ -1,10 +1,10 @@
 # Changelog
 
-## V 2.0.0
+## V 2.0.2
 
 ### Breaking changes
 
-- Renamed RestClient to HttpRestClient to fix conflicting class name and namespace.
+- Renamed RestClient to HttpRestClient to fix conflict with namespace.
 - Renamed HttpRestClient.WithJsonOptions to HttpRestClient.AddJsonOptions
 
 ### New features

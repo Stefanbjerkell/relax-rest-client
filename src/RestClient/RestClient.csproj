@@ -15,7 +15,8 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <AssemblyName>StefanBjerkell.RestClient</AssemblyName>
     <Authors>Stefanbjerkell</Authors>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
+    <PackageReleaseNotes>Added methods for simple addition of common auth headers. Basic auth (username:password) and Auth tokens. (bearer tokens) </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
