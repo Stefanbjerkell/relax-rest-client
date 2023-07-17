@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using RestClient.Serialization;
+using RestClient.Serializers;
 
 namespace RestClient
 {

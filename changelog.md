@@ -2,16 +2,19 @@
 
 ## V 3.0.0
 
-This major version is focused on giving more controll over the JsonSerialization.
+This major version update is focused on giving more control over the json serialization.
  
 ### Breaking changes
 
 - Default TimeOutInSeconds value increased from 10 to 30 seconds.
-- Removed the JsonOptions parameters from all the constructors, due to a rework on how JsonParsing is handled.
+- All HttpRestClient constructors now take a IRestClientSerializer interface instead of JsonSerializerOptions. To give more flexibility.
 
-### New featurs
+### New features
 
-- 
+- Interface IRestClientSerializer. This gives the posibility to swich out the json serializer used in the HttpRestClient.
+- RestClient.Serializers.Newtonsoft package! This contains a IRestClientSerializer using Newtonsoft.
+- Static property HttpRestClient.DefaultSerializer. This will be used if no other serializer is set.
+- Extension for setting the default serializer in program.cs.
 
 ## V 2.0.2
 

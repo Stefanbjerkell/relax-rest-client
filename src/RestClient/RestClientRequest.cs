@@ -1,8 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using RestClient.ErrorHandling;
-using RestClient.Serialization;
+using RestClient.Serializers;
 
 namespace RestClient;
 
@@ -119,11 +118,12 @@ public class RestClientRequest
 
     // Content
 
-    public RestClientRequest WithJsonBody(object body)
+    public RestClientRequest WithJsonBody(object? body)
     {
-        if (body is null) return this;
-
         StringBody = _serializer.Serialize(body);
+
+        if(StringBody is null) return this;
+
         var mediaType = "application/json";
         var content = new StringContent(StringBody, null, mediaType);
 

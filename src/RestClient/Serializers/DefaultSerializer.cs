@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace RestClient.Serialization
+namespace RestClient.Serializers
 {
     public class DefaultSerializer : IRestClientSerializer
     {
@@ -11,15 +11,15 @@ namespace RestClient.Serialization
             Options = options ?? new JsonSerializerOptions();
         }
 
-        public T? Deserialize<T>(string json)
+        public T? Deserialize<T>(string? json)
         {
+            if (json == null) return default;
+
             return JsonSerializer.Deserialize<T>(json, Options);
         }
 
-        public string? Serialize(object item)
+        public string? Serialize(object? item)
         {
-            if (item == null) return null;
-
             return JsonSerializer.Serialize(item, Options);
         }
     }

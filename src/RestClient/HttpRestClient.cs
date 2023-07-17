@@ -1,31 +1,29 @@
-﻿using RestClient.Serialization;
+﻿using RestClient.Serializers;
 using System.Text;
-using System.Text.Json;
 
 namespace RestClient
 {
     public class HttpRestClient
     {
+        public static IRestClientSerializer DefaultSerializer { get; set; } = new DefaultSerializer();
+
         private readonly HttpClient _client;
 
-        public IRestClientSerializer Serializer { get; set; }
+        public IRestClientSerializer? Serializer { get; set; }
 
         public Dictionary<string, string> DefaultHeaders { get; set; } = new Dictionary<string, string>();  
 
 
         public HttpRestClient(string baseUrl, IRestClientSerializer? serializer = null)
         {
-            Serializer = serializer ?? new DefaultSerializer();
-
+            Serializer = serializer;
             _client = new HttpClient();
-
             _client.BaseAddress = new Uri(baseUrl);
         }
 
         public HttpRestClient(RestClientSettings settings, IRestClientSerializer? serializer = null)
         {
-            Serializer =  serializer ?? new DefaultSerializer();
-
+            Serializer = serializer;
             _client = new HttpClient
             {
                 BaseAddress = new Uri(settings.BaseUrl),
@@ -47,7 +45,7 @@ namespace RestClient
 
         public HttpRestClient(HttpClient client, IRestClientSerializer? serializer = null)
         {
-            Serializer = serializer ?? new DefaultSerializer();
+            Serializer = serializer;
             _client = client;
         }
 
@@ -55,24 +53,24 @@ namespace RestClient
 
         public RestClientRequest Get(string path)
         {
-            return new RestClientRequest(HttpMethod.Get, path, _client, Serializer, DefaultHeaders);
+            return new RestClientRequest(HttpMethod.Get, path, _client, Serializer ?? DefaultSerializer, DefaultHeaders);
         }
 
         public RestClientRequest Put(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Put, path, _client, Serializer, DefaultHeaders)
+            return new RestClientRequest(HttpMethod.Put, path, _client, Serializer ?? DefaultSerializer, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Post(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Post, path, _client, Serializer, DefaultHeaders)
+            return new RestClientRequest(HttpMethod.Post, path, _client, Serializer ?? DefaultSerializer, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Delete(string path)
         {
-            return new RestClientRequest(HttpMethod.Delete, path, _client, Serializer, DefaultHeaders);
+            return new RestClientRequest(HttpMethod.Delete, path, _client, Serializer ?? DefaultSerializer, DefaultHeaders);
         }
 
         // Options

@@ -286,4 +286,49 @@ builder.Services.AddOptions<WeatherApiSettings>()
 In this example we are using the AddOptions method to add the IOption\<WeatherService> interface to DI. 
 I like this way because it can also run validations for your data annotaions in your settings object.
 
+## Json Serializers
 
+By default the HttpRestClient will use the built in System.Text.Json.JsonSerializer to serialize/deserialize objects.
+
+There are however options to override this if you want to use for example Newtonsoft.
+
+All construcors on the HttpRestClient have the possibility to include/inject a optional IRestClientSerializer. 
+If you provice a serializer here it will be used instad of the default one.
+
+> 💡 If you are happy wiht the .NET serializer but want to change the json options you can add a new DefaultSerializer here with your own settings.
+
+If you want to do this on a global level for all your HttpRestClient's you can register it in your program.cs/starup.cs like this,
+
+Example.
+```
+services.AddHttpRestClient()
+	.AddDefaultSerializer(new JsonSerializerOptions());
+```
+
+You can also directly replace the DefaultSerializer on the static field HttpRestClient.DefaultSerializer
+```
+var myOptions = new JsonSerializerOptions()
+
+HttpRestClient.DefaultSerializer = new DefaultSerializer(myOptions)
+```
+
+#### NewtonsoftSerializer
+
+I also created a Newtonsoft serializer that you can use by adding the RestClient.Serializers.Newtonsoft nuget package.
+You can then add it as the default serializer like this.
+```
+services.AddHttpRestClient()
+	.AddNewtonsoftDefaultSerializer(new JsonSerializerSettings());
+```
+
+Or if you want to have it only in a specific client you can provide it when creating it like this.
+```
+var serializer = new NewtonsoftSerializer(new JsonSerializerSettings());
+var client = new HttpRestClient("MyUrl", serializer);
+// OR
+client = new HttpRestClient("MyUrl")
+{
+	Serializer = serializer
+}
+```
+Alternatively if you create your clients from dependency injection you can also add the IRestClientSerializer interface to DI and resolve it to the serializer of your preference.
