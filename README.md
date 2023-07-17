@@ -70,14 +70,11 @@ var response = await request.Execute();
 
 If you want to add authorization to your client you can use the following 2 methods on the client.
 ```
-
 client.AddAuthToken(token, "Bearer");
-
 // OR
-
 client.AddBasicAuth(username, password);
-
 ```
+> 💡 on AddAuthToken "Bearer" is default value so you cont have to include that.
 
 
 #### Request/Response body
