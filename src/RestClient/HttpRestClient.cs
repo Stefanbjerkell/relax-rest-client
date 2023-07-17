@@ -1,34 +1,36 @@
-﻿using System.Text;
+﻿using RestClient.Serialization;
+using System.Text;
 using System.Text.Json;
 
 namespace RestClient
 {
     public class HttpRestClient
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
-        public JsonSerializerOptions JsonOptions { get; set; }
+        public IRestClientSerializer Serializer { get; set; }
 
         public Dictionary<string, string> DefaultHeaders { get; set; } = new Dictionary<string, string>();  
 
 
-        public HttpRestClient(string baseUrl, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(string baseUrl, IRestClientSerializer? serializer = null)
         {
-            JsonOptions = jsonOptions ?? new JsonSerializerOptions();
+            Serializer = serializer ?? new DefaultSerializer();
 
             _client = new HttpClient();
 
             _client.BaseAddress = new Uri(baseUrl);
         }
 
-        public HttpRestClient(RestClientSettings settings, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(RestClientSettings settings, IRestClientSerializer? serializer = null)
         {
-            JsonOptions = jsonOptions ?? new JsonSerializerOptions();
+            Serializer =  serializer ?? new DefaultSerializer();
 
-            _client = new HttpClient();
-
-            _client.BaseAddress = new Uri(settings.BaseUrl);
-            _client.Timeout = TimeSpan.FromSeconds(settings.TimeoutInSeconds);
+            _client = new HttpClient
+            {
+                BaseAddress = new Uri(settings.BaseUrl),
+                Timeout = TimeSpan.FromSeconds(settings.TimeoutInSeconds)
+            };
 
             if (!string.IsNullOrEmpty(settings.UserAgent))
             {
@@ -37,15 +39,15 @@ namespace RestClient
 
         }        
 
-        public HttpRestClient(HttpMessageHandler messageHandler, JsonSerializerOptions? jsonOptions = null) 
-            : this(new HttpClient(messageHandler), jsonOptions)
+        public HttpRestClient(HttpMessageHandler messageHandler, IRestClientSerializer? serializer = null) 
+            : this(new HttpClient(messageHandler), serializer)
         {
 
         }
 
-        public HttpRestClient(HttpClient client, JsonSerializerOptions? jsonOptions = null)
+        public HttpRestClient(HttpClient client, IRestClientSerializer? serializer = null)
         {
-            JsonOptions = jsonOptions ?? new JsonSerializerOptions();
+            Serializer = serializer ?? new DefaultSerializer();
             _client = client;
         }
 
@@ -53,24 +55,24 @@ namespace RestClient
 
         public RestClientRequest Get(string path)
         {
-            return new RestClientRequest(HttpMethod.Get, path, _client, JsonOptions, DefaultHeaders);
+            return new RestClientRequest(HttpMethod.Get, path, _client, Serializer, DefaultHeaders);
         }
 
         public RestClientRequest Put(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Put, path, _client, JsonOptions, DefaultHeaders)
+            return new RestClientRequest(HttpMethod.Put, path, _client, Serializer, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Post(string path, object? body = null)
         {
-            return new RestClientRequest(HttpMethod.Post, path, _client, JsonOptions, DefaultHeaders)
+            return new RestClientRequest(HttpMethod.Post, path, _client, Serializer, DefaultHeaders)
                 .WithJsonBody(body);
         }
 
         public RestClientRequest Delete(string path)
         {
-            return new RestClientRequest(HttpMethod.Delete, path, _client, JsonOptions, DefaultHeaders);
+            return new RestClientRequest(HttpMethod.Delete, path, _client, Serializer, DefaultHeaders);
         }
 
         // Options
@@ -80,12 +82,6 @@ namespace RestClient
             if (DefaultHeaders.ContainsKey(key)) throw new Exception("Header with same name already added!");
 
             DefaultHeaders.Add(key, value);
-        }
-
-        public HttpRestClient AddJsonOptions(JsonSerializerOptions jsonOptions)
-        {
-            JsonOptions = jsonOptions;
-            return this;
         }
 
         public HttpRestClient AddBasicAuth(string username, string password)
@@ -103,14 +99,6 @@ namespace RestClient
 
             return this;
         }
-    }
 
-    public class RestClientSettings
-    {
-        public string BaseUrl { get; set; } = "";
-
-        public int TimeoutInSeconds { get; set; } = 10;
-
-        public string? UserAgent { get; set;}
     }
 }

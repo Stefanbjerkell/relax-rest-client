@@ -1,24 +1,23 @@
 ﻿using System.Net;
-using System.Text.Json;
-using RestClient.ErrorHandling;
+using RestClient.Serialization;
 
 namespace RestClient
 {
     public class RestClientResponse
     {
-        private JsonSerializerOptions _jsonOptions;
+        private IRestClientSerializer _serializer;
 
-        public RestClientResponse(HttpResponseMessage response, RestClientRequest request,string stringContent, JsonSerializerOptions jsonOptions)
+        public RestClientResponse(HttpResponseMessage response, RestClientRequest request,string stringContent, IRestClientSerializer serializer)
         { 
             StringContent = stringContent;
             ResponseMessage = response;
             StatusCode = response.StatusCode;
             Request = request;
 
-            _jsonOptions = jsonOptions ?? new JsonSerializerOptions();
+            _serializer = serializer;
         }
 
-        public RestClientResponse(RestClientError error, HttpResponseMessage response, RestClientRequest request, JsonSerializerOptions jsonOptions)
+        public RestClientResponse(RestClientError error, HttpResponseMessage response, RestClientRequest request, IRestClientSerializer serializer)
         {
             Request = request; 
             ResponseMessage = response;
@@ -26,7 +25,7 @@ namespace RestClient
             StatusCode = response.StatusCode;
             Error = error;
 
-            _jsonOptions = jsonOptions ?? new JsonSerializerOptions();
+            _serializer = serializer;
         }
 
         public HttpStatusCode StatusCode { get; set; }
@@ -43,7 +42,7 @@ namespace RestClient
 
         public T? Content<T>() where T : class
         {
-            return JsonSerializer.Deserialize<T>(StringContent, _jsonOptions);
+            return _serializer.Deserialize<T>(StringContent);
         }
     }
 }
