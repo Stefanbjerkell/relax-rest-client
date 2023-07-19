@@ -36,9 +36,9 @@ jobs:
       
     - name: Publish - Nuget
       if: startsWith(github.ref, 'refs/heads/main')
-      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}} -SkipDuplicate
 
     - name: Publish - Github
       if: startsWith(github.ref, 'refs/heads/main')
-      run: nuget push **\*.nupkg -Source 'https://nuget.pkg.github.com/Stefanbjerkell/index.json' -ApiKey ${{secrets.PAT}}
+      run: nuget push **\*.nupkg -Source 'https://nuget.pkg.github.com/Stefanbjerkell/index.json' -ApiKey ${{secrets.PAT}} -SkipDuplicate
 
